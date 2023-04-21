@@ -1,13 +1,13 @@
 import "./TodoFooter.css";
 
-function TodoFooter({ todos, onClearCompeted }) {
+function TodoFooter({ todos, onClearCompleted }) {
   return (
     <div className="todoAppFooter">
       <span>
         {todos.filter((todo) => todo.isCompleted).length}/{todos.length}{" "}
         Completed
       </span>
-      <button onClick={onClearCompeted} className="todoClearCompleted">Clear Completed</button>
+      <button onClick={onClearCompleted} className="todoClearCompleted">Clear Completed</button>
     </div>
   );
 }

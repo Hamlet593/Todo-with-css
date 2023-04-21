@@ -47,6 +47,8 @@ function App() {
     },
   ]);
 
+  console.log(todos)
+
   return (
     <div className="App">
       <header>
