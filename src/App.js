@@ -1,11 +1,35 @@
-import { useState } from "react";
-import TodoList from "./TodoList";
-import TodoForm from "./TodoForm";
-import TodoFooter from "./TodoFooter";
+import { useReducer } from "react";
 import "./App.css";
+import TodoForm from "./TodoForm";
+import TodoList from "./TodoList";
+import TodoFooter from "./TodoFooter";
+
+function reducer(state, action) {
+  if (action.type === "add") {
+    return [
+      ...state,
+      {
+        id: Math.random(),
+        text: action.payload.text,
+        isCompleted: false,
+      },
+    ];
+  } else if (action.type === "delete") {
+    return state.filter((t) => t.id !== action.payload.id);
+  } else if (action.type === "clear-completed") {
+    return state.filter((todo) => !todo.isCompleted);
+  } else if (action.type === "update") {
+    return state.map((todo) => {
+      if (todo.id === action.payload.updatedTodo.id) {
+        return action.payload.updatedTodo;
+      }
+      return todo;
+    });
+  }
+}
 
 function App() {
-  const [todos, setTodos] = useState([
+  const [todos, dispatch] = useReducer(reducer, [
     {
       id: Math.random(),
       text: "Learn JS",
@@ -28,36 +52,42 @@ function App() {
       <header>
         <h1 className="todoAppTitle">todos</h1>
       </header>
+
       <TodoForm
         onAdd={(text) => {
-          setTodos([
-            ...todos,
-            {
-              id: Math.random(),
+          dispatch({
+            type: "add",
+            payload: {
               text: text,
-              isCompleted: false,
             },
-          ]);
+          });
         }}
       />
       <TodoList
         todos={todos}
         onDelete={(todo) => {
-          setTodos(todos.filter((t) => t.id !== todo.id));
+          dispatch({
+            type: "delete",
+            payload: {
+              id: todo.id,
+            },
+          });
         }}
         onChange={(newTodo) => {
-          setTodos(
-            todos.map((todo) => {
-              if (newTodo.id === todo.id) return newTodo;
-              else return todo;
-            })
-          );
+          dispatch({
+            type: "update",
+            payload: {
+              updatedTodo: newTodo,
+            },
+          });
         }}
       />
       <TodoFooter
         todos={todos}
-        onClearCompeted={() => {
-          setTodos(todos.filter((todo) => !todo.isCompleted));
+        onClearCompleted={() => {
+          dispatch({
+            type: "clear-completed",
+          });
         }}
       />
     </div>
