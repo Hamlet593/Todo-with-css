@@ -1,8 +1,18 @@
-import { useReducer } from "react";
+import { useState } from "react";
 import "./App.css";
 import TodoForm from "./TodoForm";
 import TodoList from "./TodoList";
 import TodoFooter from "./TodoFooter";
+
+function useReducer(reducer, initialState) {
+  const [state, setState] = useState(initialState);
+  return [
+    state,
+    (action) => {
+      setState(reducer(state, action));
+    },
+  ];
+}
 
 function reducer(state, action) {
   if (action.type === "add") {
